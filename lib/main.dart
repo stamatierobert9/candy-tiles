@@ -62,7 +62,12 @@ class _MyHomePageState extends State<MyHomePage> {
           return GestureDetector(
             onTap: () {
               print('Tapped on tile at ($row, $column)');
-              // Placeholder for actual game logic (swap tiles, check for matches)
+              if (column < board.columns - 1) {
+                setState(() {
+                  board.swapTiles(row, column, row, column + 1);
+                  var matches = board.checkForMatches();
+                });
+              }
             },
             child: Container(
               decoration: BoxDecoration(

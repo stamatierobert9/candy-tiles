@@ -1,7 +1,5 @@
-// This is a simplified model for demonstration purposes.
-
 class GameTile {
-  final int colorCode; // Use this to differentiate candy colors.
+  final int colorCode;
   GameTile({required this.colorCode});
 }
 
@@ -14,16 +12,22 @@ class GameBoard {
       : board = List.generate(
             rows, (_) => List.generate(columns, (_) => GameTile(colorCode: 0)));
 
-  // Initialize the board with random colors.
   void initialize() {
     for (var i = 0; i < rows; i++) {
       for (var j = 0; j < columns; j++) {
-        board[i][j] = GameTile(
-            colorCode: (i + j) % 5 + 1); // Simple pattern for demonstration
+        board[i][j] = GameTile(colorCode: (i + j) % 5 + 1);
       }
     }
   }
 
-  // Add methods for swapping tiles and checking for matches here.
-  // This example won't cover the full logic but you would implement it based on matching adjacent tiles of the same color.
+  // Swap two tiles
+  void swapTiles(int row1, int col1, int row2, int col2) {
+    var temp = board[row1][col1];
+    board[row1][col1] = board[row2][col2];
+    board[row2][col2] = temp;
+  }
+
+  List<GameTile> checkForMatches() {
+    return [];
+  }
 }
