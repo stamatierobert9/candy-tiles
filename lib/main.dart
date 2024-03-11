@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'game_model.dart'; // Make sure to create this file with the game model code
+import 'dart:math'; // Import for using Point
 
 void main() {
   runApp(const MyApp());
@@ -31,12 +32,40 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final GameBoard board = GameBoard(rows: 8, columns: 8);
+  final GameBoard board = GameBoard(rows: 6, columns: 6);
+  Point<int>?
+      firstSelectedTile; // Add this line to track the first selected tile
 
   @override
   void initState() {
     super.initState();
     board.initialize();
+  }
+
+  void handleTileTap(int row, int column) {
+    final currentSelection = Point(row, column);
+
+    if (firstSelectedTile == null) {
+      setState(() {
+        firstSelectedTile = currentSelection;
+      });
+    } else {
+      // Check if the selected tile is adjacent to the first
+      if (isAdjacent(firstSelectedTile!, currentSelection)) {
+        setState(() {
+          board.swapTiles(
+              firstSelectedTile!.x, firstSelectedTile!.y, row, column);
+          // You could add logic here to check for matches
+        });
+      }
+      firstSelectedTile =
+          null; // Reset the selection after swap or if not adjacent
+    }
+  }
+
+  bool isAdjacent(Point<int> first, Point<int> second) {
+    return (first.x == second.x && (first.y - second.y).abs() == 1) ||
+        (first.y == second.y && (first.x - second.x).abs() == 1);
   }
 
   @override
@@ -60,15 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
           final tile = board.board[row][column];
 
           return GestureDetector(
-            onTap: () {
-              print('Tapped on tile at ($row, $column)');
-              if (column < board.columns - 1) {
-                setState(() {
-                  board.swapTiles(row, column, row, column + 1);
-                  var matches = board.checkForMatches();
-                });
-              }
-            },
+            onTap: () => handleTileTap(row, column),
             child: Container(
               decoration: BoxDecoration(
                 color:
